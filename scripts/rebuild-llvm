@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+LLVM_VERSION=21
+INSTALL_PATH="${HOME}/software/llvm${LLVM_VERSION}-assert"
+SOURCE_PATH="${HOME}/sources/llvm-project-${LLVM_VERSION}"
+
+prev_path=`pwd`
+echo "Source path: "$SOURCE_PATH
+echo "Install path: "$INSTALL_PATH
+
+
+if [ -d $SOURCE_PATH ]; then
+    cd $SOURCE_PATH
+else
+    echo "llvm${LLVM_VERSION} sources not found.";
+    exit -1;
+fi
+
+mkdir build-release
+cd build-release
+cmake ../llvm \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_BUILD_PARALLEL_LEVEL=$(nproc) \
+  -DLLVM_ENABLE_PROJECTS="lld;clang;lldb" \
+  -DLLVM_ENABLE_LIBXML2=OFF \
+  -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_ENABLE_LIBEDIT=OFF \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_PARALLEL_LINK_JOBS=1 \
+  -G Ninja
+
+rm -rf $INSTALL_PATH
+mkdir $INSTALL_PATH
+ninja install
+cd $prev_path

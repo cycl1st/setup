@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Required: libzstd-dev
+# Add to ~/.profile:
+# export SBCL_HOME="$HOME/.local/lib/sbcl"
+
+SBCL_PREFIX=$HOME/.local
+SBCL_LIB="${SBCL_PREFIX}/lib/sbcl"
+SBCL_BIN="${SBCL_PREFIX}/bin/sbcl"
+SBCL_MAN="${SBCL_PREFIX}/share/man/man1/sbcl.1"
+
+prev_path=`pwd`
+cd ~/sources/sbcl
+
+    sh clean.sh \
+    && sh make.sh --fancy --prefix=$SBCL_PREFIX \
+    && cd ./tests && sh run-tests.sh \
+    && cd ../doc/manual && make && cd ../.. \
+    && rm $SBCL_BIN \
+    && rm -rf $SBCL_LIB \
+    && rm $SBCL_MAN \
+    && unset SBCL_HOME \
+    && sh install.sh
+
+cd $prev_path

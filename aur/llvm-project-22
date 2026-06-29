@@ -1,0 +1,54 @@
+pkgname="llvm-project-git"
+pkgver=22.1.8.0.gca7933e47d3a3
+pkgrel=1
+pkgdesc="The LLVM Compiler Infrastructure"
+arch=('x86_64')
+url="https://github.com/llvm/llvm-project"
+license=('Apache-2.0')
+depends=()
+makedepends=('cmake' 'ninja' 'git' 'python')
+provides=('clang=22' 'lld=22' 'lldb=22')
+conflicts=('clang' 'lld' 'lldb')
+backup=()
+options=('!strip' '!lto' '!debug')
+install=
+changelog=
+source=("${pkgname}::git+https://github.com/llvm/llvm-project#branch=release/22.x")
+noextract=()
+sha256sums=('SKIP')
+validpgpkeys=()
+
+prepare() {
+	  echo "Preparing stage"
+}
+
+pkgver() {
+    cd "${pkgname}"
+    git describe --long --tags | sed 's/^llvmorg-//;s/-/./g'
+}
+
+build() {
+    echo "Build stage"
+    echo "src: ${srcdir}"
+    echo "pkgname: ${pkgname}"
+    cmake -B build -S "$srcdir/$pkgname/llvm" \
+          -DCMAKE_INSTALL_PREFIX="/opt/${pkgname}" \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DLLVM_ENABLE_PROJECTS="lld;clang;lldb" \
+          -DLLVM_ENABLE_LIBXML2=OFF \
+          -DLLVM_ENABLE_TERMINFO=OFF \
+          -DLLVM_ENABLE_LIBEDIT=OFF \
+          -DLLVM_ENABLE_ASSERTIONS=ON \
+          -DLLVM_PARALLEL_LINK_JOBS=1 \
+          -G Ninja
+    cmake --build build
+}
+
+check() {
+	  echo "Check phase"
+}
+
+package() {
+	  echo "Package phase"
+    DESTDIR="$pkgdir" cmake --install build
+}

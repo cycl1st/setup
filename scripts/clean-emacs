@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+rm -rf ~/.config/emacs/{auto-save-list,eln-cache,elpa,eshell,transient,tree-sitter,tramp}

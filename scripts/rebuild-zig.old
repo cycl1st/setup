@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+install_path=$HOME/software/zig
+prev_path=`pwd`
+source_dir=$HOME/sources/zig
+llvm_path=/usr/lib/llvm-21
+
+echo "LLVM path: $llvm_path"
+echo "zig source dir: $source_dir"
+echo "zig installation dir: $install_path"
+
+if [ ! -d $install_path ]; then
+    echo "Installation path does not exist. Creating..."
+    mkdir -p $install_path
+fi
+
+if [ -d $source_dir ]; then
+    cd $source_dir
+    git clean -dfx
+    mkdir build
+    cd build
+    echo "LLVM PATH:" $llvm_path
+    CMAKE_BUILD_PARALLEL_LEVEL=$(nproc) cmake .. \
+                              -DCMAKE_C_COMPILER=clang-21 \
+                              -DCMAKE_CXX_COMPILER=clang++-21 \
+                              -DCMAKE_PREFIX_PATH=/usr/lib/llvm-21 \
+                              -DCMAKE_BUILD_TYPE=Debug \
+                              -DCLANG_INCLUDE_DIRS=/usr/lib/llvm-21/include
+    make -j$(nproc) install
+    rm -rf $install_path/*
+    cp -r stage3/* $install_path/
+    cd $prev_path
+fi

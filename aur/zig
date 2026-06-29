@@ -1,0 +1,43 @@
+pkgname=zig-git
+pkgver=0.17.0.r1142.gb23a9579151b
+pkgrel=1
+pkgdesc="Zig is a general-purpose programming language and toolchain for maintaining robust, optimal and reusable software."
+arch=('x86_64')
+url="https://ziglang.org/"
+license=('MIT')
+depends=()
+makedepends=('git' 'cmake' 'llvm-project-git')
+provides=('zig')
+conflicts=('zig')
+backup=()
+options=('!strip' '!lto' '!debug')
+install=
+source=("${pkgname}::git+https://codeberg.org/ziglang/zig#branch=master")
+noextract=()
+sha256sums=('SKIP')
+
+
+pkgver() {
+	  cd "$srcdir/${pkgname}"
+    # from https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=zig-git#n19
+    MAJ=$(grep "set(ZIG_VERSION_MAJOR" CMakeLists.txt | cut -d' ' -f2 | cut -d')' -f1)
+    MIN=$(grep "set(ZIG_VERSION_MINOR" CMakeLists.txt | cut -d' ' -f2 | cut -d')' -f1)
+    PAT=$(grep "set(ZIG_VERSION_PATCH" CMakeLists.txt | cut -d' ' -f2 | cut -d')' -f1)
+    HASH=$(git describe --long --tags --abbrev=12 | sed 's/v//;s/\([^-]*-g\)/r\1/;s/-/./g' | cut -d'.' -f4,5)
+    echo "$MAJ.$MIN.$PAT.${HASH}"
+}
+
+build() {
+    export LLVM="/opt/llvm-project-git"
+	  cmake -B build -S "$srcdir/$pkgname" \
+          -DCMAKE_INSTALL_PREFIX="/opt/${pkgname}" \
+          -DCMAKE_PREFIX_PATH="$LLVM" \
+          -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -d "$pkgdir/usr/bin"
+    ln -s "/opt/$pkgname/bin/zig" "$pkgdir/usr/bin/zig"
+}
