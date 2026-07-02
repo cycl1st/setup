@@ -1,5 +1,5 @@
 pkgname=zig-git
-pkgver=0.17.0.r1142.gb23a9579151b
+pkgver=0.17.0.r1245.gefd6f190fd82
 pkgrel=1
 pkgdesc="Zig is a general-purpose programming language and toolchain for maintaining robust, optimal and reusable software."
 arch=('x86_64')
