@@ -430,9 +430,6 @@ lisp-modes mode.
   :bind ( :map cider-mode-map
           ("M-RET" . cider-inspect-last-result)
           ("C-c M-;" . cider-pprint-eval-last-sexp-to-comment)
-          :map cider-insert-commands-map
-          ("C-j" . send-to-repl)
-          ("j" . send-to-repl)
           :map cider-repl-mode-map
           ("C-S-p" . scroll-up-line)
           ("C-S-n" . scroll-down-line))
@@ -441,7 +438,7 @@ lisp-modes mode.
     (when-let ((session (sesman-current-session 'CIDER)))
       (let ((name (car session)))
         (setq cider-default-session name))))
-  (defun send-to-repl ()
+  (defun send-to-repl-and-switch ()
     (interactive)
     (let ((sexp (copy-backward-sexp)))
       (cider-switch-to-repl-buffer)
@@ -452,6 +449,12 @@ lisp-modes mode.
     (let* ((conn-info (cider--connection-info (cider-current-connection))))
       (when (string-search "Babashka" conn-info)
         (setq cider-print-fn 'pprint))))
+  :init
+  (let ((my-suffix '("Send to REPL and switch" send-to-repl-and-switch)))
+    (transient-append-suffix 'cider-insert-menu "e"
+      (cons "j" my-suffix))
+    (transient-append-suffix 'cider-insert-menu "e"
+      (cons "C-j" (append my-suffix '(:level 0)))))
   :custom
   (cider-save-file-on-load nil)
   (cider-print-fn 'fipp)
