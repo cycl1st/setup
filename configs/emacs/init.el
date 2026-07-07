@@ -449,8 +449,8 @@ lisp-modes mode.
     (let* ((conn-info (cider--connection-info (cider-current-connection))))
       (when (string-search "Babashka" conn-info)
         (setq cider-print-fn 'pprint))))
-  :init
-  (let ((my-suffix '("Send to REPL and switch" send-to-repl-and-switch)))
+  :config
+  (let ((my-suffix '("Last sexp and switch" send-to-repl-and-switch)))
     (transient-append-suffix 'cider-insert-menu "e"
       (cons "j" my-suffix))
     (transient-append-suffix 'cider-insert-menu "e"
