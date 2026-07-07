@@ -419,11 +419,14 @@ lisp-modes mode.
   (clojure-indent-style 'always-indent))
 
 (use-package cider
-  :ensure t
+  :vc ( :url "https://github.com/clojure-emacs/cider"
+        :branch "master"
+        :rev :newest)
   :defer t
   :hook (((cider-repl-mode cider-mode) . eldoc-mode)
          (cider-repl-mode . common-lisp-modes-mode)
-         (cider-connected . on-babashka))
+         (cider-connected . on-babashka)
+         (cider-connected . set-default-session))
   :bind ( :map cider-mode-map
           ("M-RET" . cider-inspect-last-result)
           ("C-c M-;" . cider-pprint-eval-last-sexp-to-comment)
@@ -433,7 +436,11 @@ lisp-modes mode.
           :map cider-repl-mode-map
           ("C-S-p" . scroll-up-line)
           ("C-S-n" . scroll-down-line))
-  :config
+  :preface
+  (defun set-default-session ()
+    (when-let ((session (sesman-current-session 'CIDER)))
+      (let ((name (car session)))
+        (setq cider-default-session name))))
   (defun send-to-repl ()
     (interactive)
     (let ((sexp (copy-backward-sexp)))
@@ -455,6 +462,10 @@ lisp-modes mode.
   (cider-font-lock-dynamically '(macro deprecated var))
   (cljr-suppress-no-project-warning t))
 
+(use-package inf-clojure
+  :ensure t
+  :defer t)
+
 (use-package clj-refactor
   :ensure t
   :defer t
@@ -463,7 +474,7 @@ lisp-modes mode.
   :config
   (cljr-add-keybindings-with-prefix "C-c C-n")
   :custom
-  (cljr-injected-middleware-version "3.13.0")
+  (cljr-injected-middleware-version "3.14.0")
   (cljr-magic-requires nil)
   (cljr-add-ns-to-blank-clj-files nil))
 
