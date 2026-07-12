@@ -2,6 +2,7 @@
 
 (defvar gc-cons-threshold-old gc-cons-threshold)
 (defvar nt? (eq system-type 'windows-nt))
+(defvar android? (eq system-type 'android))
 
 (setq gc-cons-threshold most-positive-fixnum ; old value is 800000
       read-process-output-max (* 1024 1024 4) ; 4mb
@@ -21,6 +22,11 @@
 ;; Fix problem with gpg on Win10
 (when nt?
   (setq package-gnupghome-dir (expand-file-name "gnupg" (getenv "APPDATA"))))
+
+(when android?
+  (setenv "PATH" (format "%s:%s" "/data/data/com.termux/files/usr/bin"
+                         (getenv "PATH")))
+  (push "/data/data/com.termux/files/usr/bin" exec-path))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
