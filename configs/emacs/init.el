@@ -596,8 +596,23 @@ lisp-modes mode.
   :ensure t
   :hook ((sly-mode . common-lisp-modes-mode))
   :custom
-  ;; (inferior-lisp-program "~/.local/bin/sbcl")
   (inferior-lisp-program "sbcl")
+  (sly-filename-translations
+   `(( ".*"
+       ,(lambda (emacs-filename)
+          (replace-regexp-in-string
+           (concat "^" (expand-file-name "sources/abcl/"))
+           "/home/abcl/work/abcl/"
+           emacs-filename))
+       ,(lambda (lisp-filename)
+          (replace-regexp-in-string
+           "^/home/abcl/work/abcl"
+           (expand-file-name "sources/abcl")
+           lisp-filename)))))
+  :init
+  (setq sly-lisp-implementations
+        `((sbcl ("/usr/sbin/sbcl"))
+          (abcl ("java" "-jar" ,(expand-file-name "software/abcl/abcl.jar")))))
   :config
   (defun eval-last-sexp-in-mrepl ()
     (interactive)
