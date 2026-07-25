@@ -469,6 +469,10 @@ lisp-modes mode.
   :ensure t
   :defer t)
 
+(use-package neat
+  :vc (:url "https://github.com/nrepl/neat" :branch "main")
+  :commands (neat neat-mode))
+
 (use-package clj-refactor
   :ensure t
   :defer t
