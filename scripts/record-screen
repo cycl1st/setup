@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Install program:
+#   sudo pacman -S gpu-screen-recorder
+
+SAVE_DIR="$HOME/Videos"
+
+if [ ! -z "$1" ]; then
+    FILENAME="${1}-$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+else
+    FILENAME="$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+fi
+
+OUTPUT_PATH="$SAVE_DIR/$FILENAME"
+echo "output path: " $OUTPUT_PATH
+gpu-screen-recorder -w screen \
+                    -f 60 \
+                    -q ultra \
+                    -ac aac \
+                    -a default_output \
+                    -o $OUTPUT_PATH
