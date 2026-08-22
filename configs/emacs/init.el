@@ -719,6 +719,7 @@ lisp-modes mode.
           ("C-r" . lua-send-region))
   :custom
   (lua-indent-level 2)
+  (lua-indent-nested-block-content-align nil)
   (lua-default-application "luajit"))
 
 (use-package ggtags
