@@ -127,6 +127,7 @@
                       '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
   (setq ring-bell-function 'ignore
         enable-recursive-minibuffers t
+        read-process-output-max (* 1024 1024)
         treesit-language-source-alist
         '((json "https://github.com/tree-sitter/tree-sitter-json" "master" "src")
           (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
@@ -457,6 +458,7 @@ lisp-modes mode.
     (transient-append-suffix 'cider-insert-menu "e"
       (cons "C-j" (append my-suffix '(:level 0)))))
   :custom
+  (cider-ns-code-reload-tool 'clj-reload)
   (cider-save-file-on-load nil)
   (cider-print-fn 'fipp)
   (cider-repl-display-help-banner nil)
@@ -780,16 +782,15 @@ lisp-modes mode.
   :ensure t
   :hook (tuareg-mode . merlin-mode))
 
-(use-package rustic
+(use-package rust-mode
   :defer t
-  :vc ( :url "https://github.com/brotzeit/rustic" :branch "master")
-  :mode ("\\.rs\\'" . rustic-mode)
-  :init (setq rust-mode-treesitter-derive t)
-  :hook ((rustic-mode . lsp-deferred)
-         (rustic-mode . corfu-mode)
-         (rustic-mode . puni-mode))
+  :vc ( :url "https://github.com/rust-lang/rust-mode" :branch "main")
+  :mode ("\\.rs\\'" . rust-mode)
+  :hook ((rust-mode . lsp-deferred)
+         (rust-mode . corfu-mode)
+         (rust-mode . puni-mode))
   :custom
-  (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer")))
+  (rust-mode-treesitter-derive t)))
 
 (use-package python-mode
   :defer t
@@ -802,3 +803,12 @@ lisp-modes mode.
   :ensure t
   :commands (dired-sidebar-toggle-sidebar)
   :bind ("<f8>" . dired-sidebar-toggle-sidebar))
+
+(use-package caddyfile-mode
+  :defer t
+  :ensure t
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("\\.caddy\\'" . caddyfile-mode))
+  :hook (caddyfile-mode . (lambda ()
+                            (setq-local tab-width 2)
+                            (setq-local indent-tabs-mode nil))))
