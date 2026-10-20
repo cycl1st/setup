@@ -1,12 +1,12 @@
 pkgname=zig-git
-pkgver=0.17.0.r1245.gefd6f190fd82
+pkgver=0.18.0.r372.g64caa0e324d5
 pkgrel=1
 pkgdesc="Zig is a general-purpose programming language and toolchain for maintaining robust, optimal and reusable software."
 arch=('x86_64')
 url="https://ziglang.org/"
 license=('MIT')
-depends=()
-makedepends=('git' 'cmake' 'llvm-project-git')
+depends=('clang' 'compiler-rt' 'lld' 'llvm-libs')
+makedepends=('git' 'cmake' 'clang' 'compiler-rt' 'lld' 'llvm-libs')
 provides=('zig')
 conflicts=('zig')
 backup=()
@@ -28,10 +28,8 @@ pkgver() {
 }
 
 build() {
-    export LLVM="/opt/llvm-project-git"
 	  cmake -B build -S "$srcdir/$pkgname" \
           -DCMAKE_INSTALL_PREFIX="/opt/${pkgname}" \
-          -DCMAKE_PREFIX_PATH="$LLVM" \
           -DCMAKE_BUILD_TYPE=Release
     cmake --build build
 }
