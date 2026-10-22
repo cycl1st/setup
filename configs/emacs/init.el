@@ -751,12 +751,21 @@ lisp-modes mode.
 
 (use-package sql-indent
   :ensure t
-  :defer t)
+  :defer t
+  :hook (sql-mode . sqlind-minor-mode))
 
 (use-package sql
   :defer t
-  :requires sql-indent
-  :hook (sql-mode . yas-minor-mode))
+  :hook (sql-mode . yas-minor-mode)
+  :custom
+  (sql-connection-alist
+   '((postgress-app-dev
+      (sql-product 'postgres)
+      (sql-server "localhost")
+      (sql-port 5432)
+      (sql-user "app")
+      (sql-password "app")
+      (sql-database "app_db")))))
 
 (use-package sml-mode
   :defer t
@@ -790,7 +799,7 @@ lisp-modes mode.
          (rust-mode . corfu-mode)
          (rust-mode . puni-mode))
   :custom
-  (rust-mode-treesitter-derive t)))
+  (rust-mode-treesitter-derive t))
 
 (use-package python-mode
   :defer t
