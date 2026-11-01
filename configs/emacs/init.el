@@ -134,7 +134,8 @@
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
           (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
           (rust "https://github.com/tree-sitter/tree-sitter-rust" "master" "src")
-          (php "https://github.com/tree-sitter/tree-sitter-php" "master" "php/src")))
+          (php "https://github.com/tree-sitter/tree-sitter-php" "master" "php/src")
+          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml" "master" "src")))
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   :bind (("M-g a" . "α")
@@ -229,6 +230,21 @@
                           113))
     (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
     :bind ("<f5>" . modus-themes-toggle)))
+
+(use-package indent-bars
+  :ensure t
+  :defer t
+  :custom
+  (indent-bars-no-descend-list nil)
+  (indent-bars-spacing-override 2))
+
+(use-package yaml-ts-mode
+  :ensure t
+  :defer t
+  :mode (("\\.yaml\\'" . yaml-ts-mode)
+         ("\\.yml\\'" . yaml-ts-mode))
+  :hook ((yaml-ts-mode . puni-mode)
+         (yaml-ts-mode . indent-bars-mode)))
 
 (use-package gruber-darker-theme
   :vc ( :url "http://github.com/rexim/gruber-darker-theme"
