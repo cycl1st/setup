@@ -2,7 +2,7 @@
 ---- MY PROGRAMS ----
 ---------------------
 
-local terminal = "kitty"
+local terminal = "ghostty"
 local fileManager = "pcmanfm"
 local docsapp = "zeal"
 local editor = "emacs"
