@@ -1,5 +1,5 @@
 pkgname=zls-git
-pkgver=r3653.8da87d4f
+pkgver=0.17.0.r31.gb3e65123
 pkgrel=1
 pkgdesc="ZLS is a non-official implementation of the Language Server Protocol for Zig in Zig."
 arch=('x86_64')
@@ -18,7 +18,7 @@ sha256sums=('SKIP')
 
 pkgver() {
 	cd "$srcdir/${pkgname}"
-	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  git describe --long --tags --abbrev=8 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 build() {
